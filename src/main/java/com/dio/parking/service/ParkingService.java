@@ -1,6 +1,7 @@
 package com.dio.parking.service;
 
 import com.dio.parking.controller.mapper.ParkingMapper;
+import com.dio.parking.dto.ParkingCreateDTO;
 import com.dio.parking.dto.ParkingDTO;
 import com.dio.parking.exception.ParkingNotfoundException;
 import com.dio.parking.model.Parking;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -30,7 +32,7 @@ public class ParkingService {
 
 
     private static String getUUID() {
-        return UUID.randomUUID().toString().replace("-","");
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
 /*    public List<ParkingDTO> findAll(){
@@ -44,8 +46,16 @@ public class ParkingService {
     }
 
     public ParkingDTO findById(String id) {
-        Parking parking = repository.findById(id).orElseThrow( () ->
+        Parking parking = repository.findById(id).orElseThrow(() ->
                 new ParkingNotfoundException(id));
         return parkingMapper.toParkingDTO(parking);
+    }
+
+    public ParkingDTO create(ParkingCreateDTO parkingCreateDTO) {
+        var parkingCreate = parkingMapper.toParkingCreate(parkingCreateDTO);
+        parkingCreate.setId(getUUID());
+        parkingCreate.setEntryDate(LocalDateTime.now());
+        parkingCreate = repository.save(parkingCreate);
+        return parkingMapper.toParkingDTO(parkingCreate);
     }
 }

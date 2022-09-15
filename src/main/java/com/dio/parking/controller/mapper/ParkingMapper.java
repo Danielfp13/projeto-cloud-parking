@@ -1,5 +1,6 @@
 package com.dio.parking.controller.mapper;
 
+import com.dio.parking.dto.ParkingCreateDTO;
 import com.dio.parking.dto.ParkingDTO;
 import com.dio.parking.model.Parking;
 import org.modelmapper.ModelMapper;
@@ -23,5 +24,9 @@ public class ParkingMapper {
 
     public ParkingDTO toParkingDTO(Parking parking) {
         return modellMapper.map(parking, ParkingDTO.class);
+    }
+
+    public Parking toParkingCreate(ParkingCreateDTO dto) {
+        return modellMapper.map(dto, Parking.class);
     }
 }
