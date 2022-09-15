@@ -73,4 +73,14 @@ public class ParkingService {
         parking.setLicense(parkingCreateDTO.getLicense());
         return parkingMapper.toParkingDTO(repository.save(parking));
     }
+
+    @Transactional
+    public ParkingDTO checkOut(String id) {
+        ParkingDTO parkingDTO = findById(id);
+        Parking parking = parkingMapper.toParking(parkingDTO);
+        parking.setExitDate(LocalDateTime.now());
+        parking.setBill(ParkingCheckOut.getBill(parking));
+        return parkingMapper.toParkingDTO(repository.save(parking));
+    }
+
 }
