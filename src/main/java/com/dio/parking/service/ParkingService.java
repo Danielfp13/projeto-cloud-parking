@@ -58,4 +58,9 @@ public class ParkingService {
         parkingCreate = repository.save(parkingCreate);
         return parkingMapper.toParkingDTO(parkingCreate);
     }
+
+    public void delete(String id) {
+        findById(id);
+        repository.deleteById(id);
+    }
 }
