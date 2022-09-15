@@ -63,4 +63,14 @@ public class ParkingService {
         findById(id);
         repository.deleteById(id);
     }
+
+    public ParkingDTO update(String id, ParkingCreateDTO parkingCreateDTO) {
+        ParkingDTO parkingDTO = findById(id);
+        Parking parking = parkingMapper.toParking(parkingDTO);
+        parking.setColor(parkingCreateDTO.getColor());
+        parking.setState(parkingCreateDTO.getState());
+        parking.setModel(parkingCreateDTO.getModel());
+        parking.setLicense(parkingCreateDTO.getLicense());
+        return parkingMapper.toParkingDTO(repository.save(parking));
+    }
 }

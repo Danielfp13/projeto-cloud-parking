@@ -20,7 +20,7 @@ public class ParkingController {
     private ParkingService service;
 
     @GetMapping
-    public ResponseEntity<List<ParkingDTO>> findAll(){
+    public ResponseEntity<List<ParkingDTO>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
@@ -43,4 +43,8 @@ public class ParkingController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO parkingCreteDTO) {
+        return ResponseEntity.ok(service.update(id, parkingCreteDTO));
+    }
 }
