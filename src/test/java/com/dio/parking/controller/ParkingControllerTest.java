@@ -4,6 +4,7 @@ import com.dio.parking.CloundParkingApplication;
 import com.dio.parking.config.SecurityConfiguration;
 import com.dio.parking.dto.ParkingCreateDTO;
 import com.dio.parking.dto.ParkingDTO;
+import com.dio.parking.exception.ParkingNotFoundException;
 import com.dio.parking.model.Parking;
 import com.dio.parking.service.ParkingService;
 import org.junit.jupiter.api.DisplayName;
@@ -101,6 +102,22 @@ public class ParkingControllerTest {
                 .andExpect(jsonPath("bill").value(parkingDTO.getBill()))
         ;
     }
+
+    @Test
+    @DisplayName("Deve retornar um not found se não existe parking com id informado.")
+    public void parkingNotFound() throws Exception {
+        String id = "1";
+
+        BDDMockito.given(parkingService.findById(Mockito.anyString()))
+                .willThrow(new ParkingNotFoundException(id));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request.with(httpBasic("user", "password")))
+                .andExpect(status().isNotFound());
+  }
 
     ParkingCreateDTO parkingCreateDTO() {
         return new ParkingCreateDTO("licese 1", " state 1", "model", "color");

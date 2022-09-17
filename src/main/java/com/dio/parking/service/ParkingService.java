@@ -3,7 +3,7 @@ package com.dio.parking.service;
 import com.dio.parking.controller.mapper.ParkingMapper;
 import com.dio.parking.dto.ParkingCreateDTO;
 import com.dio.parking.dto.ParkingDTO;
-import com.dio.parking.exception.ParkingNotfoundException;
+import com.dio.parking.exception.ParkingNotFoundException;
 import com.dio.parking.model.Parking;
 import com.dio.parking.repository.ParkingRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class ParkingService {
 
     public ParkingDTO findById(String id) {
         Parking parking = repository.findById(id).orElseThrow(() ->
-                new ParkingNotfoundException(id));
+                new ParkingNotFoundException(id));
         return parkingMapper.toParkingDTO(parking);
     }
 
