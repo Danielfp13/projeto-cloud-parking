@@ -4,6 +4,7 @@ import com.dio.parking.CloundParkingApplication;
 import com.dio.parking.config.SecurityConfiguration;
 import com.dio.parking.dto.ParkingCreateDTO;
 import com.dio.parking.dto.ParkingDTO;
+import com.dio.parking.model.Parking;
 import com.dio.parking.service.ParkingService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class ParkingControllerTest {
     @Test
    // @WithMockUser(username = "user", password = "$2a$10$5CIdivekmhGur24bViGn0OA6XlYyLmzG6NI6JKVa4H/yohe0/gY6K", roles = "USER")
     @DisplayName("Deve criar um parking com sucesso.")
-    public void createBookTest() throws Exception {
+    public void createParkingTest() throws Exception {
 
         ParkingCreateDTO parkingCreateDTO = parkingCreateDTO();
         ParkingDTO parkingDTO = new ParkingDTO("5bba37a03b4547efabedd104de9fb280","license", "state",
@@ -74,6 +75,31 @@ public class ParkingControllerTest {
                 .andExpect(jsonPath("bill").value(parkingDTO.getBill()))
         ;
         Mockito.verify(parkingService, Mockito.times(0)).create(parkingCreateDTO);
+    }
+
+    @Test
+    @DisplayName("Deve obter as informações de um parking por id")
+    public void getParkingDetailsTest() throws Exception {
+
+        ParkingDTO parkingDTO = new ParkingDTO("5bba37a03b4547efabedd104de9fb280","license", "state",
+                "model", "Color", LocalDateTime.now().minusDays(1), LocalDateTime.now(),23.0);
+
+        BDDMockito.given(parkingService.findById(parkingDTO.getId())).willReturn(parkingDTO);
+
+        final MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat("/" + parkingDTO.getId()))
+                .accept(MediaType.APPLICATION_JSON);
+
+
+        mvc.perform(request.with(httpBasic("user", "password")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value("5bba37a03b4547efabedd104de9fb280"))
+                .andExpect(jsonPath("license").value(parkingDTO.getLicense()))
+                .andExpect(jsonPath("state").value(parkingDTO.getState()))
+                .andExpect(jsonPath("model").value(parkingDTO.getModel()))
+                .andExpect(jsonPath("color").value(parkingDTO.getColor()))
+                .andExpect(jsonPath("bill").value(parkingDTO.getBill()))
+        ;
     }
 
     ParkingCreateDTO parkingCreateDTO() {
