@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -118,6 +120,39 @@ public class ParkingControllerTest {
         mvc.perform(request.with(httpBasic("user", "password")))
                 .andExpect(status().isNotFound());
   }
+
+    @Test
+    @DisplayName("Deve obter uma lista com todos os parking")
+    public void getParkingsTest() throws Exception {
+
+        List<ParkingDTO> list = new ArrayList<>();
+        list.add( new ParkingDTO("5bba37a03b4547efabedd104de9fb280","license", "state",
+                "model", "Color", LocalDateTime.now().minusDays(1), LocalDateTime.now(),23.0));
+
+        BDDMockito.given(parkingService.findAll()).willReturn(list);
+
+        final MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(httpBasic("user", "password"));
+
+
+        mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("[0].id").value(list.get(0).getId()))
+                .andExpect(jsonPath("[0].license").value(list.get(0).getLicense()))
+                .andExpect(jsonPath("[0].state").value(list.get(0).getState()))
+                .andExpect(jsonPath("[0].model").value(list.get(0).getModel()))
+                .andExpect(jsonPath("[0].color").value(list.get(0).getColor()))
+                .andExpect(jsonPath("[0].bill").value(list.get(0).getBill()))
+        ;
+    }
+
+
+
+
+
+
 
     ParkingCreateDTO parkingCreateDTO() {
         return new ParkingCreateDTO("licese 1", " state 1", "model", "color");
