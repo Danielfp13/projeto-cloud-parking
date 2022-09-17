@@ -52,7 +52,8 @@ public class ParkingController {
     @PutMapping("/{id}")
     @Operation(summary = "Alterar", description = "Alterar parking informando os dados e o id do parking a ser alterado.")
     public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO parkingCreteDTO) {
-        return ResponseEntity.ok(service.update(id, parkingCreteDTO));
+        service.update(id, parkingCreteDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}")
