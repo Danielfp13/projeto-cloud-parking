@@ -168,6 +168,21 @@ public class ParkingControllerTest {
                 ;
     }
 
+    @Test
+    @DisplayName("Deve deletar um parking")
+    public void deleteBookTest() throws Exception {
+        String id = "5bba37a03b4547efabedd104de9fb280";
+        ParkingDTO parkingDTO = this.parkingDTO();
+        BDDMockito.given(parkingService.findById(Mockito.anyString())).willReturn(parkingDTO);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .delete(BOOK_API.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON)
+                .with(httpBasic("user", "password"));
+
+        mvc.perform(request)
+                .andExpect(status().isNoContent());
+    }
 
     ParkingCreateDTO parkingCreateDTO() {
         return new ParkingCreateDTO("licese 1", " state 1", "model", "color");
